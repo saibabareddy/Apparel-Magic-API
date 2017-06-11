@@ -6,9 +6,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Repository;
+
+import com.katalyst.model.CreateNewPO;
 
 
 @Repository
@@ -28,8 +31,8 @@ public class PoDao {
 	    	
 	    	
 	      Class.forName("com.mysql.jdbc.Driver").newInstance();
-	      String url = "";
-	      conn = DriverManager.getConnection(url, "", "");
+	      String url = "jdbc:mysql://katalyst.ciuhq69jhwir.us-east-2.rds.amazonaws.com:3306/Katalyst";
+	      conn = DriverManager.getConnection(url, "baba", "babababa");
 	      
 	      System.out.println("COnnection Successful");
 	      
@@ -77,12 +80,16 @@ public class PoDao {
 	    try
 	    {
 	      Statement st = conn.createStatement();
-	      ResultSet rs = st.executeQuery("Select * from customer");
+	      ResultSet rs = st.executeQuery("Select * from PO");
 	      while (rs.next())
 	      {
-	        String s = rs.getString("First_Name");
-	       String n = rs.getString("Last_Name");
-	        System.out.println(s + "   " + n);
+	        int s = rs.getInt("PO");
+	       String n = rs.getString("date_due");
+	       String m = rs.getString("Podate");
+	       String o = rs.getString("warehouse_id");
+	       String p = rs.getString("vendor_id");
+	       String q = rs.getString("terms_id");
+	        System.out.println(s + "   " + n + " "+m+" "+o);
 	      }
 	    }
 	    catch (SQLException ex)
@@ -90,19 +97,48 @@ public class PoDao {
 	      System.err.println(ex.getMessage());
 	    }
 	  }
+	
+	public String getPO(int poid)
+	  {
+	    System.out.println("[OUTPUT FROM SELECT]");
+	    Integer s = null;
+	  
+	    try
+	    {
+	    	PreparedStatement st = conn.prepareStatement("Select PO from PO where PO = ?");
+	    	st.setInt(1, poid);
+	      ResultSet rs = st.executeQuery();
+	      
+	      while (rs.next())
+	      {
+	        s = rs.getInt("PO");
+	      }
+	    }
+	    catch (SQLException ex)
+	    {
+	      System.err.println(ex.getMessage());
+	    }
+	    return s+"";
+	  }
 
 	  
 	  // Following method inserts
 
 
-	public void doInsertCustomer(String first_name,String last_name)
+	public void doInsertCustomer(CreateNewPO purchaseorder)
 	{
 	  System.out.print("\n[Performing INSERT] ... ");
 	  try
 	  {
-	    PreparedStatement st = conn.prepareStatement("INSERT INTO customer VALUES (?, ?)");
-	    st.setString(1, first_name);
-		st.setString(2, last_name);
+	    PreparedStatement st = conn.prepareStatement("INSERT INTO PO (PO, date_due, POdate, warehouse_id, Ship_via, vendor_id, terms_id) VALUES (?,?,?,?,?,?,?)");
+	    st.setInt(1, Integer.parseInt(purchaseorder.getPurchase_order_id()));
+		st.setString(2, purchaseorder.getDate_due());
+		st.setString(3, purchaseorder.getDate());
+		st.setString(4, purchaseorder.getWarehouse_id());
+		st.setString(5, purchaseorder.getShip_via());
+		st.setString(6, purchaseorder.getVendor_id());
+		st.setString(7, purchaseorder.getTerms_id());
+		
 	    st.executeUpdate();
 	    System.out.println("Insert succesful");
 	  }

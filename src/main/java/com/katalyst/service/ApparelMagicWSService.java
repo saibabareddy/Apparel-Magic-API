@@ -6,11 +6,14 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.katalyst.controller.ApparelMagicWSController;
+import com.katalyst.dao.PoDao;
+import com.katalyst.model.CreateNewPO;
 import com.katalyst.model.MapShipment;
 import com.katalyst.model.NewOrder;
 import com.katalyst.model.Shipment;
@@ -26,6 +29,9 @@ public class ApparelMagicWSService {
 	
 	private static String token= "64ebd05e550b23a15be09ccef57b27c6";
     private static String time="171114279788";
+    
+    @Autowired
+    public PoDao padao;
 	
 	public ArrayList<Shipment> getShipments()
 	{
@@ -137,10 +143,30 @@ public class ApparelMagicWSService {
 			response = HttpClient.sendto(null, "GET", "purchase_orders?time=171114279788&token=64ebd05e550b23a15be09ccef57b27c6");
 			responsearray=(JSONArray)response.get("response");
 			int j=responsearray.size();
+			logger.debug("Number of Arrays:"+j);
 			Shipments =new ArrayList<>();
-			for(int i=0;i < j; i++)
+			for(int i=0; i < j; i++)
 			{
 				PO=(JSONObject) responsearray.get(i);
+				CreateNewPO newpo = new CreateNewPO();
+				newpo.setPurchase_order_id(PO.getString("purchase_order_id"));
+				newpo.setDate(PO.getString("date"));
+				newpo.setDate_due(PO.getString("date_due"));
+				newpo.setShip_via(PO.getString("ship_via"));
+				newpo.setTerms_id(PO.getString("terms_id"));
+				newpo.setWarehouse_id(PO.getString("warehouse_id"));
+				newpo.setVendor_id(PO.getString("vendor_id"));
+				
+				padao.createConnection();
+				String id= padao.getPO(Integer.parseInt(newpo.getPurchase_order_id()));
+				
+				if(id.isEmpty() || id == null)
+				{
+				padao.doInsertCustomer(newpo);
+				padao.doSelectTest();
+				}
+				padao.closeConnection();
+				
 				
 			}
 		} catch (Exception e) {
@@ -148,7 +174,7 @@ public class ApparelMagicWSService {
 			e.printStackTrace();
 		}
 		
-	     return purchase_order_items.toString();
+	     return PO.toString();
 		
 	}
 
