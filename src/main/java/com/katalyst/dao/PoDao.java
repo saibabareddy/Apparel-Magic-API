@@ -1,0 +1,182 @@
+package com.katalyst.dao;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Repository;
+
+
+@Repository
+@PropertySource("application.properties")
+public class PoDao {
+	
+	public Connection conn;
+
+
+	 
+	  
+	 
+	  public void createConnection()
+	  {
+	    try
+	    {
+	    	
+	    	
+	      Class.forName("com.mysql.jdbc.Driver").newInstance();
+	      String url = "";
+	      conn = DriverManager.getConnection(url, "", "");
+	      
+	      System.out.println("COnnection Successful");
+	      
+	      
+	    }
+	    catch (Exception e)     
+	    {
+	    	System.err.println(e.getMessage());
+	    }
+	  
+	  }
+
+	  
+	  // Following method is used to select from table using preparedStatement
+	  public void select(String first_name, String last_name)
+	  {
+		  
+		  PreparedStatement pstmt;
+		try {
+			pstmt = conn.prepareStatement("Select * from customer where First_Name like ? and last_name like ?");
+			  
+			//Initialize first parameter with email address
+			pstmt.setString(1, first_name);
+			pstmt.setString(2, last_name);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next())
+			{
+				String s = rs.getString("First_Name");
+				String n = rs.getString("Last_Name");
+				System.out.println(s + "   " + n);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+			
+	  }
+	  
+
+	  // Following method is a simple select
+	public void doSelectTest( )
+	  {
+	    System.out.println("[OUTPUT FROM SELECT]");
+	  
+	    try
+	    {
+	      Statement st = conn.createStatement();
+	      ResultSet rs = st.executeQuery("Select * from customer");
+	      while (rs.next())
+	      {
+	        String s = rs.getString("First_Name");
+	       String n = rs.getString("Last_Name");
+	        System.out.println(s + "   " + n);
+	      }
+	    }
+	    catch (SQLException ex)
+	    {
+	      System.err.println(ex.getMessage());
+	    }
+	  }
+
+	  
+	  // Following method inserts
+
+
+	public void doInsertCustomer(String first_name,String last_name)
+	{
+	  System.out.print("\n[Performing INSERT] ... ");
+	  try
+	  {
+	    PreparedStatement st = conn.prepareStatement("INSERT INTO customer VALUES (?, ?)");
+	    st.setString(1, first_name);
+		st.setString(2, last_name);
+	    st.executeUpdate();
+	    System.out.println("Insert succesful");
+	  }
+	  catch (SQLException ex)
+	  {
+	    System.err.println(ex.getMessage());
+	  }
+	}
+
+
+	  
+	  public void doInsertTest()
+	  {
+	    System.out.print("\n[Performing INSERT] ... ");
+	    try
+	    {
+	      Statement st = conn.createStatement();
+	      st.executeUpdate("INSERT INTO customer VALUES ('Anurag11', 'Bhusari11')");
+	      System.out.println("Insert succesful");
+	    }
+	    catch (SQLException ex)
+	    {
+	      System.err.println(ex.getMessage());
+	    }
+	  }
+
+	  
+	  // Following method updates
+	  public void doUpdateTest()
+	  {
+	    System.out.print("\n[Performing UPDATE] ... ");
+	    try
+	    {
+	      Statement st = conn.createStatement();
+	      st.executeUpdate("UPDATE customer SET Last_Name='Bhu' WHERE Last_Name='Bhusari'");
+	      System.out.println("Update succesful");
+	    }
+	    catch (SQLException ex)
+	    {
+	      System.err.println(ex.getMessage());
+	    }
+	  }
+
+	  
+	  
+	  // Following method delete
+	  public void doDeleteTest()
+	  {
+	    System.out.print("\n[Performing DELETE] ... ");
+	    try
+	    {
+	      Statement st = conn.createStatement();
+	      st.executeUpdate("delete from customer  WHERE Last_Name='Bhusari11'");
+	      
+	      System.out.println("Delete succesful");
+	    }
+	    catch (SQLException ex)
+	    {
+	      System.err.println(ex.getMessage());
+	    }
+	  }
+	  
+	  
+	  public void closeConnection()
+	  {
+		  
+		  try {
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	  }
+	  
+	
+
+}

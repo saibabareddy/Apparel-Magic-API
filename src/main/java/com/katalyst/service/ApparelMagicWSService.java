@@ -124,6 +124,33 @@ public class ApparelMagicWSService {
 		logger.debug("Response from HttpClient: "+response.toString());
 		return response.toString();
 	}
+	
+	public String getPO()
+	{
+		
+		JSONObject response = null;
+		JSONObject PO = null;
+		JSONArray responsearray=null;
+		JSONArray purchase_order_items= null;
+		ArrayList<Shipment> Shipments = null;
+		try {
+			response = HttpClient.sendto(null, "GET", "purchase_orders?time=171114279788&token=64ebd05e550b23a15be09ccef57b27c6");
+			responsearray=(JSONArray)response.get("response");
+			int j=responsearray.size();
+			Shipments =new ArrayList<>();
+			for(int i=0;i < j; i++)
+			{
+				PO=(JSONObject) responsearray.get(i);
+				
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	     return purchase_order_items.toString();
+		
+	}
 
 
 }

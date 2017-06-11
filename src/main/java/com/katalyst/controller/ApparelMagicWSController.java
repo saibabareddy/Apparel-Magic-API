@@ -72,4 +72,13 @@ public class ApparelMagicWSController {
 		return apparelMagicWsService.createNewOrder(request);
 	}
 	
+	//This method is for getting all PO's
+		@RequestMapping(value="/Purchase_order")
+		@Produces(MediaType.TEXT_PLAIN)
+		public String PurchaseOrders()
+		{
+			return apparelMagicWsService.getPO();
+			
+		}
+	
 }
