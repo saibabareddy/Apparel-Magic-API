@@ -8,6 +8,12 @@ public class CreateNewPO {
 	String ship_via;
 	String vendor_id;
 	String terms_id;
+	@Override
+	public String toString() {
+		return "CreateNewPO [date_due=" + date_due + ", date=" + date + ", purchase_order_id=" + purchase_order_id
+				+ ", warehouse_id=" + warehouse_id + ", ship_via=" + ship_via + ", vendor_id=" + vendor_id
+				+ ", terms_id=" + terms_id + "]";
+	}
 	public String getDate_due() {
 		return date_due;
 	}

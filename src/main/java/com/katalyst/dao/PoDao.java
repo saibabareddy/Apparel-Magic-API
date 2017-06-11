@@ -12,6 +12,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Repository;
 
 import com.katalyst.model.CreateNewPO;
+import com.katalyst.model.CreateNewPO1;
 
 
 @Repository
@@ -100,7 +101,7 @@ public class PoDao {
 	
 	public String getPO(int poid)
 	  {
-	    System.out.println("[OUTPUT FROM SELECT]");
+	    System.out.println("[OUTPUT FROM Slect of PO]");
 	    Integer s = null;
 	  
 	    try
@@ -125,7 +126,7 @@ public class PoDao {
 	  // Following method inserts
 
 
-	public void doInsertCustomer(CreateNewPO purchaseorder)
+	public void doInsertPO(CreateNewPO purchaseorder)
 	{
 	  System.out.print("\n[Performing INSERT] ... ");
 	  try
@@ -139,6 +140,28 @@ public class PoDao {
 		st.setString(6, purchaseorder.getVendor_id());
 		st.setString(7, purchaseorder.getTerms_id());
 		
+	    st.executeUpdate();
+	    System.out.println("Insert succesful");
+	  }
+	  catch (SQLException ex)
+	  {
+	    System.err.println(ex.getMessage());
+	  }
+	}
+	
+	
+	public void doInsertPurchase_order_item(CreateNewPO1 poi)
+	{
+	  System.out.print("\n[Performing INSERT] ... ");
+	  try
+	  {
+	    PreparedStatement st = conn.prepareStatement("INSERT INTO purchase_order_items (po_id, style_number, attr2, po_size, qty, amount) VALUES (?,?,?,?,?,?)");
+	    st.setInt(1, Integer.parseInt(poi.getPo_id()));
+		st.setString(2, poi.getStyle_number());
+		st.setString(3, poi.getAttr2());
+		st.setString(4, poi.getSize());
+		st.setString(5, poi.getQty());
+		st.setString(6, poi.getAmount());
 	    st.executeUpdate();
 	    System.out.println("Insert succesful");
 	  }

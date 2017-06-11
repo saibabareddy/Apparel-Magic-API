@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.katalyst.controller.ApparelMagicWSController;
 import com.katalyst.dao.PoDao;
 import com.katalyst.model.CreateNewPO;
+import com.katalyst.model.CreateNewPO1;
 import com.katalyst.model.MapShipment;
 import com.katalyst.model.NewOrder;
 import com.katalyst.model.Shipment;
@@ -138,6 +139,7 @@ public class ApparelMagicWSService {
 		JSONObject PO = null;
 		JSONArray responsearray=null;
 		JSONArray purchase_order_items= null;
+		JSONObject poi = null;
 		ArrayList<Shipment> Shipments = null;
 		try {
 			response = HttpClient.sendto(null, "GET", "purchase_orders?time=171114279788&token=64ebd05e550b23a15be09ccef57b27c6");
@@ -145,6 +147,7 @@ public class ApparelMagicWSService {
 			int j=responsearray.size();
 			logger.debug("Number of Arrays:"+j);
 			Shipments =new ArrayList<>();
+			padao.createConnection();
 			for(int i=0; i < j; i++)
 			{
 				PO=(JSONObject) responsearray.get(i);
@@ -156,19 +159,31 @@ public class ApparelMagicWSService {
 				newpo.setTerms_id(PO.getString("terms_id"));
 				newpo.setWarehouse_id(PO.getString("warehouse_id"));
 				newpo.setVendor_id(PO.getString("vendor_id"));
-				
-				padao.createConnection();
+				logger.debug("object of New PO:"+newpo.toString());
+				purchase_order_items = (JSONArray) PO.get("purchase_order_items");
+				logger.debug("array of purchase order item:"+purchase_order_items.toString());
+				int k = purchase_order_items.size();
 				String id= padao.getPO(Integer.parseInt(newpo.getPurchase_order_id()));
-				
+				logger.debug("id from select of po:"+id);
 				if(id.isEmpty() || id == null)
 				{
-				padao.doInsertCustomer(newpo);
-				padao.doSelectTest();
+				for(int m=0; m < k ; m++)
+				{
+					poi =  purchase_order_items.getJSONObject(m);
+					CreateNewPO1 poiobj = new CreateNewPO1();
+					poiobj.setPo_id(PO.getString("purchase_order_id"));
+					poiobj.setAmount(poi.getString("amount"));
+					poiobj.setAttr2(poi.getString("attr_2"));
+					poiobj.setQty(poi.getString("qty"));
+					poiobj.setSize(poi.getString("size"));
+					poiobj.setStyle_number(poi.getString("style_number"));
+					logger.debug("The Data of purchase orders :"+ poiobj.toString());
+					padao.doInsertPurchase_order_item(poiobj);
 				}
-				padao.closeConnection();
-				
-				
+				padao.doInsertPO(newpo);
+				}
 			}
+			padao.closeConnection();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
