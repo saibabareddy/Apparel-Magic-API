@@ -17,6 +17,7 @@ import com.katalyst.model.CreateNewPO;
 import com.katalyst.model.CreateNewPO1;
 import com.katalyst.model.MapShipment;
 import com.katalyst.model.NewOrder;
+import com.katalyst.model.ShipVia;
 import com.katalyst.model.Shipment;
 import com.katalyst.util.HttpClient;
 
@@ -159,29 +160,32 @@ public class ApparelMagicWSService {
 				newpo.setTerms_id(PO.getString("terms_id"));
 				newpo.setWarehouse_id(PO.getString("warehouse_id"));
 				newpo.setVendor_id(PO.getString("vendor_id"));
+				String name= getNameForWarehouseId(newpo.getWarehouse_id());
 				logger.debug("object of New PO:"+newpo.toString());
 				purchase_order_items = (JSONArray) PO.get("purchase_order_items");
 				logger.debug("array of purchase order item:"+purchase_order_items.toString());
 				int k = purchase_order_items.size();
 				String id= padao.getPO(Integer.parseInt(newpo.getPurchase_order_id()));
 				logger.debug("id from select of po:"+id);
-				if(id.isEmpty() || id == null)
+				
+				if(id.equals("null"))
 				{
+				logger.debug("I am here");
 				for(int m=0; m < k ; m++)
-				{
-					poi =  purchase_order_items.getJSONObject(m);
-					CreateNewPO1 poiobj = new CreateNewPO1();
-					poiobj.setPo_id(PO.getString("purchase_order_id"));
-					poiobj.setAmount(poi.getString("amount"));
-					poiobj.setAttr2(poi.getString("attr_2"));
-					poiobj.setQty(poi.getString("qty"));
-					poiobj.setSize(poi.getString("size"));
-					poiobj.setStyle_number(poi.getString("style_number"));
-					logger.debug("The Data of purchase orders :"+ poiobj.toString());
-					padao.doInsertPurchase_order_item(poiobj);
-				}
+					{
+						poi =  purchase_order_items.getJSONObject(m);
+						CreateNewPO1 poiobj = new CreateNewPO1();
+						poiobj.setPo_id(PO.getString("purchase_order_id"));
+						poiobj.setAmount(poi.getString("amount"));
+						poiobj.setAttr2(poi.getString("attr_2"));
+						poiobj.setQty(poi.getString("qty"));
+						poiobj.setSize(poi.getString("size"));
+						poiobj.setStyle_number(poi.getString("style_number"));
+						logger.debug("The Data of purchase orders :"+ poiobj.toString());
+						padao.doInsertPurchase_order_item(poiobj);
+					}
 				padao.doInsertPO(newpo);
-				}
+			}
 			}
 			padao.closeConnection();
 		} catch (Exception e) {
@@ -191,6 +195,84 @@ public class ApparelMagicWSService {
 		
 	     return PO.toString();
 		
+	}
+	
+	
+	
+	private String getNameForWarehouseId(String id){
+		String name = null;
+		try {
+			JSONObject response = HttpClient.sendto(null, "GET", "warehouses/"+ id +"?time=171114279788&token=64ebd05e550b23a15be09ccef57b27c6");
+			JSONArray responsearray = (JSONArray) response.get("response");
+			JSONObject required = (JSONObject) responsearray.get(0);
+			name = (String)response.get("name");
+			logger.debug("getting name:"+name);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return name;
+	}
+	private String getNameForVendorId(String id){
+		String vendor_name = null;
+		try {
+			if(id == null){
+				vendor_name = "String";
+			}
+			else{
+			JSONObject response = HttpClient.sendto(null, "GET", "vendors/"+ id +"?time=171114279788&token=64ebd05e550b23a15be09ccef57b27c6");
+			JSONArray responsearray = (JSONArray) response.get("response");
+			JSONObject required = (JSONObject) responsearray.get(0);
+			vendor_name = (String)response.get("vendor_name");
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return vendor_name;
+	}
+	private String getNameForTermsId(String id){
+		String name = null;
+		try {
+			if(id == null){
+				name = "String";
+			}
+			else{
+				
+			
+			JSONObject response = HttpClient.sendto(null, "GET", "terms/"+ id +"?time=171114279788&token=64ebd05e550b23a15be09ccef57b27c6");
+			JSONArray responsearray = (JSONArray) response.get("response");
+			JSONObject required = (JSONObject) responsearray.get(0);
+			name = (String)response.get("name");
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return name;
+	}
+	private ShipVia getNameForShipvia(String id){
+		ShipVia via = new ShipVia();
+		try {
+			if(id.equals(null)){
+				via.setName("String");
+				via.setProvider("String");
+			}
+			else{
+				JSONObject response = HttpClient.sendto(null, "GET", "warehouses/"+ id +"?time=171114279788&token=64ebd05e550b23a15be09ccef57b27c6");
+				JSONArray responsearray = (JSONArray) response.get("response");
+				JSONObject required = (JSONObject) responsearray.get(0);
+				via.setName(required.getString("name"));
+				via.setProvider(required.getString("provider"));
+			
+			}
+			
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return via;
 	}
 
 
