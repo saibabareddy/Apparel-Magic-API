@@ -23,6 +23,7 @@ import com.katalyst.model.SkuJson;
 import com.katalyst.model.SkuLineItemsJson;
 import com.katalyst.model.SkuShipCarrier;
 import com.katalyst.util.HttpClient;
+import com.katalyst.util.SkuHttpClient;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -136,7 +137,7 @@ public class ApparelMagicWSService {
 		return response.toString();
 	}
 	
-	public String getPO()
+	public ArrayList<JSONObject> getPO()
 	{
 		
 		JSONObject response = null;
@@ -145,89 +146,63 @@ public class ApparelMagicWSService {
 		JSONArray purchase_order_items= null;
 		JSONObject poi = null;
 		ArrayList<Shipment> Shipments = null;
+		ArrayList<JSONObject> responsefromskuvault= new ArrayList<>();
+		JSONObject oneresponsefromskuvault = null;
 		try {
 			response = HttpClient.sendto(null, "GET", "purchase_orders?time=171114279788&token=64ebd05e550b23a15be09ccef57b27c6");
+			logger.debug("The data we get from apparel Magic:"+response.toString());
 			responsearray=(JSONArray)response.get("response");
 			int j=responsearray.size();
-			logger.debug("Number of Arrays:"+j);
+			//logger.debug("Number of Arrays:"+j);
 			Shipments =new ArrayList<>();
-			padao.createConnection();
+			//padao.createConnection();
 			for(int i=0; i < j; i++)
 			{
 				PO=(JSONObject) responsearray.get(i);
-				SkuJson post1 = new SkuJson();
-				post1.setArrivalDueDate(PO.getString("date_due"));
-				post1.setOrderDate(PO.getString("date"));
-				post1.setOrderCancelDate(PO.getString("date_due"));
-				post1.setPoNumber(PO.getString("purchase_order_id"));
-				post1.setShipToWarehouse(getNameForWarehouseId(PO.getString("warehouse_id")));
-				post1.setTermsName(getNameForTermsId(PO.getString("terms_id")));
-				post1.setSupplierName(getNameForVendorId(PO.getString("vendor_id")));
-				post1.setShipToAddress("N/A");
-				post1.setTenantToken("Kels6k5wARKewRWwCs4aNtXqWNUKO+pDtuQH0/pGN1Q=");
-				post1.setUserToken("HU516hJO+DBzcpmwNu/O/RM5FFvwY2qcKK4MuXBYdRo=");
-				ShipVia post3 = new ShipVia();
-				post3 = getNameForShipvia(PO.getString("ship_via"));
-				CreateNewPO newpo = new CreateNewPO();
-				newpo.setPurchase_order_id(PO.getString("purchase_order_id"));
-				newpo.setDate(PO.getString("date"));
-				newpo.setDate_due(PO.getString("date_due"));
-				newpo.setShip_via(PO.getString("ship_via"));
-				newpo.setTerms_id(PO.getString("terms_id"));
-				newpo.setWarehouse_id(PO.getString("warehouse_id"));
-				newpo.setVendor_id(PO.getString("vendor_id"));
-				String name= getNameForWarehouseId(newpo.getWarehouse_id());
-				logger.debug("object of New PO:"+newpo.toString());
+				SkuJson post1= mapPost1(PO);
+				ShipVia post3 = getNameForShipvia(PO.getString("ship_via"));
+				CreateNewPO newpo =mapPO(PO);
+				//logger.debug("object of New PO:"+newpo.toString());
 				purchase_order_items = (JSONArray) PO.get("purchase_order_items");
-				logger.debug("array of purchase order item:"+purchase_order_items.toString());
+				//logger.debug("array of purchase order item:"+purchase_order_items.toString());
 				int k = purchase_order_items.size();
-				String id= padao.getPO(Integer.parseInt(newpo.getPurchase_order_id()));
-				logger.debug("id from select of po:"+id);
+				//String id= padao.getPO(Integer.parseInt(newpo.getPurchase_order_id()));
+				//logger.debug("id from select of po:"+id);
 				ArrayList<SkuLineItemsJson> post2 = new ArrayList<>();
 				
-				if(id.equals("null"))
+				//if(id.equals("null"))
 				{
-				logger.debug("I am here");
+				//logger.debug("I am here");
 				int v = 0;
 				for(int m=0; m < k ; m++)
 					{
 						poi =  purchase_order_items.getJSONObject(m);
-						SkuLineItemsJson post = new SkuLineItemsJson();
-						post.setCost(poi.getString("amount"));
-						post.setQuantity(poi.getString("qty"));
-						post.setQuantityTo3PL(poi.getString("qty"));
-						post.setSKU(poi.getString("style_number")+"-"+poi.getString("attr_2")+"-"+poi.getString("size"));
-						post.setIdentifier("Shipping");
-						post.setPrivateNotes("String");
-						post.setPublicNotes("String");
-						post.setVariant("String"); 
-						post2.add(post);
-						logger.debug("Line Items array data:" + post2.get(m));
-						logger.debug("Line Items array size inside loop :" + v);
+						post2.add(mapPost2(poi));
+						//logger.debug("Line Items array data:" + post2.get(m));
+						//logger.debug("Line Items array size inside loop :" + v);
 						v++;
-						CreateNewPO1 poiobj = new CreateNewPO1();
-						poiobj.setPo_id(PO.getString("purchase_order_id"));
-						poiobj.setAmount(poi.getString("amount"));
-						poiobj.setAttr2(poi.getString("attr_2"));
-						poiobj.setQty(poi.getString("qty"));
-						poiobj.setSize(poi.getString("size"));
-						poiobj.setStyle_number(poi.getString("style_number"));
-						logger.debug("The Data of purchase orders :"+ poiobj.toString());
-						padao.doInsertPurchase_order_item(poiobj);
+						CreateNewPO1 poiobj = mapPO1(poi, PO);
+						//padao.doInsertPurchase_order_item(poiobj);
 					}
-				logger.debug("Line Items array size:" + post2.size());
+				//logger.debug("Line Items array size:" + post2.size());
+				//logger.info("Output of get from ");
 				JSONObject postdataJson = postJson(post1, post2, post3);
 				logger.debug("The Json to be posted:"+ postdataJson.toString());
-				padao.doInsertPO(newpo);
+				if(!(postdataJson == null))
+				{
+					responsefromskuvault.add(SkuHttpClient.sendto(postdataJson,"POST","purchaseorders/createPO"));
+				}
+				logger.debug("Response from Sku Vault:"+ responsefromskuvault);
+				//padao.doInsertPO(newpo);
 			}
 			}
-			padao.closeConnection();
+			//padao.closeConnection();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-	     return PO.toString();
+	     return responsefromskuvault;
 		
 	}
 	
@@ -252,9 +227,10 @@ public class ApparelMagicWSService {
 	private String getNameForWarehouseId(String id){
 		String name = null;
 		try {
-			JSONObject response = HttpClient.sendto(null, "GET", "warehouses/"+ id +"?time=171114279788&token=64ebd05e550b23a15be09ccef57b27c6");
+			JSONObject response = HttpClient.sendto(null, "GET", "warehouses/"+id+"?time=171114279788&token=64ebd05e550b23a15be09ccef57b27c6");
 			JSONArray responsearray = (JSONArray) response.get("response");
 			int i = responsearray.size();
+			logger.info("Response of warehouseid:"+ response.toString());
 			if(i == 0)
 			{
 				name = "String";
@@ -262,7 +238,7 @@ public class ApparelMagicWSService {
 			else
 			{
 			JSONObject required = (JSONObject) responsearray.get(0);
-			name = (String)response.get("name");
+			name = (String)required.get("name");
 			logger.debug("getting name:"+name);
 			}
 		} catch (Exception e) {
@@ -281,13 +257,14 @@ public class ApparelMagicWSService {
 			JSONObject response = HttpClient.sendto(null, "GET", "vendors/"+ id +"?time=171114279788&token=64ebd05e550b23a15be09ccef57b27c6");
 			JSONArray responsearray = (JSONArray) response.get("response");
 			int i = responsearray.size();
+			logger.info("Response of vendorid:"+ response.toString());
 			if(i == 0)
 			{
 				vendor_name = "String";
 			}
 			else{
 			JSONObject required = (JSONObject) responsearray.get(0);
-			vendor_name = (String)response.get("vendor_name");
+			vendor_name = (String)required.get("vendor_name");
 			}
 			}
 		} catch (Exception e) {
@@ -308,6 +285,7 @@ public class ApparelMagicWSService {
 			JSONObject response = HttpClient.sendto(null, "GET", "terms/"+ id +"?time=171114279788&token=64ebd05e550b23a15be09ccef57b27c6");
 			JSONArray responsearray = (JSONArray) response.get("response");
 			int i = responsearray.size();
+			logger.info("Response of termsid:"+ response.toString());
 			if(i == 0)
 			{
 				name = "String";
@@ -315,7 +293,7 @@ public class ApparelMagicWSService {
 			else
 			{
 			JSONObject required = (JSONObject) responsearray.get(0);
-			name = (String)response.get("name");
+			name = (String)required.get("name");
 			}
 			}
 		} catch (Exception e) {
@@ -335,6 +313,7 @@ public class ApparelMagicWSService {
 				JSONObject response = HttpClient.sendto(null, "GET", "warehouses/"+ id +"?time=171114279788&token=64ebd05e550b23a15be09ccef57b27c6");
 				JSONArray responsearray = (JSONArray) response.get("response");
 				int i = responsearray.size();
+				//logger.info("Response of Shipviaid:"+ response.toString());
 				if(i == 0)
 				{
 					via.setName("String");
@@ -345,7 +324,6 @@ public class ApparelMagicWSService {
 				JSONObject required = (JSONObject) responsearray.get(0);
 				via.setName(required.getString("name"));
 				via.setProvider(required.getString("provider"));
-			
 			}
 			}
 			
@@ -354,6 +332,62 @@ public class ApparelMagicWSService {
 			e.printStackTrace();
 		}
 		return via;
+	}
+	
+	private SkuJson mapPost1(JSONObject PO) {
+		SkuJson post1 = new SkuJson();
+		post1.setArrivalDueDate(PO.getString("date_due"));
+		post1.setOrderDate(PO.getString("date"));
+		post1.setOrderCancelDate(PO.getString("date_due"));
+		post1.setPoNumber(PO.getString("purchase_order_id"));
+		logger.info("warehouse id from ");
+		post1.setShipToWarehouse(getNameForWarehouseId(PO.getString("warehouse_id")));
+		post1.setTermsName(getNameForTermsId(PO.getString("terms_id")));
+		post1.setSupplierName(getNameForVendorId(PO.getString("vendor_id")));
+		post1.setShipToAddress("N/A");
+		post1.setTenantToken("Kels6k5wARKewRWwCs4aNtXqWNUKO+pDtuQH0/pGN1Q=");
+		post1.setUserToken("HU516hJO+DBzcpmwNu/O/RM5FFvwY2qcKK4MuXBYdRo=");
+		return post1;
+	}
+	
+	private CreateNewPO mapPO(JSONObject PO)
+	{
+		CreateNewPO newpo = new CreateNewPO();
+		newpo.setPurchase_order_id(PO.getString("purchase_order_id"));
+		newpo.setDate(PO.getString("date"));
+		newpo.setDate_due(PO.getString("date_due"));
+		newpo.setShip_via(PO.getString("ship_via"));
+		newpo.setTerms_id(PO.getString("terms_id"));
+		newpo.setWarehouse_id(PO.getString("warehouse_id"));
+		newpo.setVendor_id(PO.getString("vendor_id"));
+		return newpo;
+	}
+	
+	private SkuLineItemsJson mapPost2(JSONObject poi)
+	{
+		SkuLineItemsJson post = new SkuLineItemsJson();
+		post.setCost(poi.getString("amount"));
+		post.setQuantity(poi.getString("qty"));
+		post.setQuantityTo3PL(poi.getString("qty"));
+		post.setSKU(poi.getString("style_number")+"-"+poi.getString("attr_2")+"-"+poi.getString("size"));
+		post.setIdentifier("Shipping");
+		post.setPrivateNotes("String");
+		post.setPublicNotes("String");
+		post.setVariant("String");
+		return post;
+	}
+	
+	private CreateNewPO1 mapPO1(JSONObject poi,JSONObject PO){
+		
+		CreateNewPO1 poiobj = new CreateNewPO1();
+		poiobj.setPo_id(PO.getString("purchase_order_id"));
+		poiobj.setAmount(poi.getString("amount"));
+		poiobj.setAttr2(poi.getString("attr_2"));
+		poiobj.setQty(poi.getString("qty"));
+		poiobj.setSize(poi.getString("size"));
+		poiobj.setStyle_number(poi.getString("style_number"));
+		logger.debug("The Data of purchase orders :"+ poiobj.toString());
+		return poiobj;
 	}
 
 

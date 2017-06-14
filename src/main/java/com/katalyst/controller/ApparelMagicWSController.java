@@ -74,8 +74,8 @@ public class ApparelMagicWSController {
 	
 	//This method is for getting all PO's
 		@RequestMapping(value="/Purchase_order")
-		@Produces(MediaType.TEXT_PLAIN)
-		public String PurchaseOrders()
+		@Produces(MediaType.APPLICATION_JSON)
+		public ArrayList<JSONObject> PurchaseOrders()
 		{
 			return apparelMagicWsService.getPO();
 			

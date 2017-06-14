@@ -42,7 +42,7 @@ public class HttpClient {
 
         String errorCodeHeader = null;
 
-        logger.debug("sending request: " + baseurl + " method: " + method + " param: " + param);
+        //logger.debug("sending request: " + baseurl + " method: " + method + " param: " + param);
 
         try {
 
@@ -104,7 +104,7 @@ public class HttpClient {
 
             errorCodeHeader = "Error code: " + returnCode + ": " + respondMessage; 
 
-            logger.info("return code: " + returnCode + " response message: " + respondMessage);
+          //  logger.info("return code: " + returnCode + " response message: " + respondMessage);
 
             if (returnCode >= 400) {
 
@@ -147,9 +147,9 @@ public class HttpClient {
 				
 				            if ((responseJsonString != null) && (responseJsonString.length() > 0)) {
 				
-				                logger.debug("response message: " + respondMessage);
+				            //    logger.debug("response message: " + respondMessage);
 				
-				                logger.debug("response from host: " + responseJsonString);
+				            //    logger.debug("response from host: " + responseJsonString);
 				
 				                responseJSON = getJSONDocument(responseJsonString);
 				
@@ -187,7 +187,7 @@ public class HttpClient {
 				        }
         		
 				
-        			logger.debug("Response JSON"+ responseJSON.toString());
+        			// logger.debug("Response JSON"+ responseJSON.toString());
 				        return responseJSON;
 				
 				    }
