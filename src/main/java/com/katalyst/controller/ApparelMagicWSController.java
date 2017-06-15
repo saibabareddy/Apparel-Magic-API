@@ -1,5 +1,6 @@
 package com.katalyst.controller;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -75,9 +76,10 @@ public class ApparelMagicWSController {
 	//This method is for getting all PO's
 		@RequestMapping(value="/Purchase_order")
 		@Produces(MediaType.APPLICATION_JSON)
-		public ArrayList<JSONObject> PurchaseOrders()
+		@Consumes(MediaType.TEXT_PLAIN)
+		public ArrayList<JSONObject> PurchaseOrders(@RequestBody String _date)
 		{
-			return apparelMagicWsService.getPO();
+			return apparelMagicWsService.SyncPOusingDate(_date);
 			
 		}
 	

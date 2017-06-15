@@ -1,5 +1,7 @@
 package com.katalyst.service;
 
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -137,7 +139,7 @@ public class ApparelMagicWSService {
 		return response.toString();
 	}
 	
-	public ArrayList<JSONObject> getPO()
+	public ArrayList<JSONObject> SyncPOusingDate(String _date)
 	{
 		
 		JSONObject response = null;
@@ -169,8 +171,12 @@ public class ApparelMagicWSService {
 				//String id= padao.getPO(Integer.parseInt(newpo.getPurchase_order_id()));
 				//logger.debug("id from select of po:"+id);
 				ArrayList<SkuLineItemsJson> post2 = new ArrayList<>();
-				
+				Date date1=(Date) new SimpleDateFormat("dd/MM/yyyy").parse(PO.getString("date"));
 				//if(id.equals("null"))
+				logger.debug("date we sent through post" + _date);
+				Date _date1 = (Date) new SimpleDateFormat("MM/dd/yyyy").parse(_date);
+				int result = _date1.compareTo(date1);
+				if( result == 1)
 				{
 				//logger.debug("I am here");
 				int v = 0;
@@ -306,8 +312,8 @@ public class ApparelMagicWSService {
 		ShipVia via = new ShipVia();
 		try {
 			if(id.equals(null)){
-				via.setName("String");
-				via.setProvider("String");
+				via.setName("thopson");
+				via.setProvider("ground");
 			}
 			else{
 				JSONObject response = HttpClient.sendto(null, "GET", "warehouses/"+ id +"?time=171114279788&token=64ebd05e550b23a15be09ccef57b27c6");
@@ -316,8 +322,8 @@ public class ApparelMagicWSService {
 				//logger.info("Response of Shipviaid:"+ response.toString());
 				if(i == 0)
 				{
-					via.setName("String");
-					via.setProvider("String");
+					via.setName("thopson");
+					via.setProvider("ground");
 				}
 				else
 				{
