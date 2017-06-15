@@ -312,8 +312,8 @@ public class ApparelMagicWSService {
 		ShipVia via = new ShipVia();
 		try {
 			if(id.equals(null)){
-				via.setName("thopson");
-				via.setProvider("ground");
+				via.setName("Ground");
+				via.setProvider("UPS");
 			}
 			else{
 				JSONObject response = HttpClient.sendto(null, "GET", "warehouses/"+ id +"?time=171114279788&token=64ebd05e550b23a15be09ccef57b27c6");
@@ -322,8 +322,8 @@ public class ApparelMagicWSService {
 				//logger.info("Response of Shipviaid:"+ response.toString());
 				if(i == 0)
 				{
-					via.setName("thopson");
-					via.setProvider("ground");
+					via.setName("Ground");
+					via.setProvider("UPS");
 				}
 				else
 				{
