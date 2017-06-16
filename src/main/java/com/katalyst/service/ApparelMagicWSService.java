@@ -23,9 +23,9 @@ public class ApparelMagicWSService {
 	
 private static final Logger logger = LoggerFactory.getLogger(ApparelMagicWSService.class);
 
-@Autowired
+/*@Autowired
 public PoDao padao;
-	
+	*/
 public ArrayList<JSONObject> SyncPOusingDate(String _date)
 	{		
 		JSONObject response = null;
@@ -56,7 +56,7 @@ public ArrayList<JSONObject> SyncPOusingDate(String _date)
 				logger.debug("date we sent through post" + _date);
 				Date _date1 = (Date) new SimpleDateFormat("MM/dd/yyyy").parse(_date);
 				int result = _date1.compareTo(date1);
-				if( result == 1)
+				if( result < 0 || result == 0)
 				{
 				int v = 0;
 				for(int m=0; m < k ; m++)
@@ -107,8 +107,9 @@ private SkuJson mapPost1(JSONObject PO)
 		post1.setArrivalDueDate(PO.getString("date_due"));
 		post1.setOrderDate(PO.getString("date"));
 		post1.setOrderCancelDate(PO.getString("date_due"));
+		post1.setRequestedShipDate(PO.getString("date_due"));
 		post1.setPoNumber(PO.getString("purchase_order_id"));
-		logger.info("warehouse id from ");
+		//logger.info("warehouse id from ");
 		post1.setShipToWarehouse(getNameForWarehouseId(PO.getString("warehouse_id")));
 		post1.setTermsName(getNameForTermsId(PO.getString("terms_id")));
 		post1.setSupplierName(getNameForVendorId(PO.getString("vendor_id")));
@@ -122,21 +123,48 @@ private SkuLineItemsJson mapPost2(JSONObject poi)
 	{
 		SkuLineItemsJson post = new SkuLineItemsJson();
 		post.setCost(poi.getString("amount"));
-		post.setQuantity(poi.getString("qty"));
-		post.setQuantityTo3PL(poi.getString("qty"));
-		post.setSKU(poi.getString("style_number")+"-"+poi.getString("attr_2")+"-"+poi.getString("size"));
+		post.setQuantity(getQty(poi.getString("qty")));
+		post.setQuantityTo3PL(getQty(poi.getString("qty")));
+		post.setSKU(poi.getString("style_number")+"-"+poi.getString("attr_2")+"-"+getSize(poi.getString("size")));
 		post.setIdentifier("Shipping");
 		post.setPrivateNotes("String");
 		post.setPublicNotes("String");
 		post.setVariant("String");
 		return post;
 	}
+private String getQty(String quantity){
+	String qty;
+	qty =String.valueOf(quantity).split("\\.")[0];
+	return (String)qty;
+	}
+private String getSize(String siz){
+	String size = null;
+	if(siz.equals("S")){
+		size = "01";		
+	}
+	else if(siz.equals("M"))
+	{
+		 size = "02";
+	}
+	else if(siz.equals("L"))
+	{
+		size = "03";
+	}
+	else if(siz.equals("XL"))
+	{
+		 size = "04";
+	}
+	else {
+		size = "05";
+	}
 	
+	return size;
+}
 private String getNameForWarehouseId(String id){
 		String name = null;
 		try {
 			if(id.equals(null)){
-				name = "String";
+				name = "BULK";
 			}
 			else{
 			JSONObject response = HttpClient.sendto(null, "GET", "warehouses/"+id+"?time=171114279788&token=64ebd05e550b23a15be09ccef57b27c6");
@@ -145,13 +173,13 @@ private String getNameForWarehouseId(String id){
 			logger.info("Response of warehouseid:"+ response.toString());
 			if(i == 0)
 			{
-				name = "String";
+				name = "BULK";
 			}
 			else
 			{
 			JSONObject required = (JSONObject) responsearray.get(0);
-			name = (String)required.get("name");
-			logger.debug("getting name:"+name);
+			name = (String)required.get("BULK");
+			//logger.debug("getting name:"+name);
 			}
 			}
 		} catch (Exception e) {
@@ -166,7 +194,7 @@ private String getNameForVendorId(String id)
 		String vendor_name = null;
 		try {
 			if(id.equals(null)){
-				vendor_name = "String";
+				vendor_name = "Gerald Ford";
 			}
 			else{
 			JSONObject response = HttpClient.sendto(null, "GET", "vendors/"+ id +"?time=171114279788&token=64ebd05e550b23a15be09ccef57b27c6");
@@ -175,7 +203,7 @@ private String getNameForVendorId(String id)
 			logger.info("Response of vendorid:"+ response.toString());
 			if(i == 0)
 			{
-				vendor_name = "String";
+				vendor_name = "Gerald Ford";
 			}
 			else{
 			JSONObject required = (JSONObject) responsearray.get(0);
@@ -225,8 +253,8 @@ private ShipVia getNameForShipvia(String id)
 		ShipVia via = new ShipVia();
 		try {
 			if(id.equals(null)){
-				via.setName("UPS");
-				via.setProvider("Ground");
+				via.setName("Ground");
+				via.setProvider("Thompson");
 			}
 			else{
 				JSONObject response = HttpClient.sendto(null, "GET", "ship_methods/"+ id +"?time=171114279788&token=64ebd05e550b23a15be09ccef57b27c6");
@@ -235,8 +263,8 @@ private ShipVia getNameForShipvia(String id)
 				//logger.info("Response of Shipviaid:"+ response.toString());
 				if(i == 0)
 				{
-					via.setName("UPS");
-					via.setProvider("Ground");
+					via.setName("Ground");
+					via.setProvider("Thompson");
 				}
 				else
 				{

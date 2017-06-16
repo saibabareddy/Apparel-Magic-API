@@ -20,8 +20,8 @@ public void createConnection()
 	   try
 	     {	    	
 	      Class.forName("com.mysql.jdbc.Driver").newInstance();
-	      String url = "jdbc:mysql://katalyst.ciuhq69jhwir.us-east-2.rds.amazonaws.com:3306/Katalyst";
-	      conn = DriverManager.getConnection(url, "baba", "babababa");	      
+	      String url = "jdbc:mysql:/wmsmysql.cun5uvzp5qky.us-east-1.rds.amazonaws.com:3306/POIntegration";
+	      conn = DriverManager.getConnection(url, "wmsmysqladmin", "");	      
 	      System.out.println("COnnection Successful");	      
 	     }
 	    catch (Exception e)     
