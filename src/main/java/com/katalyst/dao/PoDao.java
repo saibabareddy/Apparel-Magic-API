@@ -12,7 +12,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Repository;
 import com.katalyst.model.CreateNewPO;
 import com.katalyst.model.CreateNewPO1;
-import com.katalyst.model.ResponseSKUVault;
 
 import net.sf.json.JSONObject;
 
@@ -105,25 +104,8 @@ public void doInsertPO(CreateNewPO purchaseorder)
 	    System.err.println(ex.getMessage());
 	  }
 }
-public void doInsertStatus(ResponseSKUVault res) 
-{
-	System.out.print("Response Inserted Succesfully ");
-	  try
-	  {
 
-	    PreparedStatement st = conn.prepareStatement("INSERT INTO Status (CreatePOStatus, returncode) VALUES (?,?)");
-	    st.setString(1, res.getCreatePOStatus());
-		st.setString(2, res.getReturnCode());
-	    st.executeUpdate();
-	    System.out.println("Response Inserted Succesfully");
 
-	  }
-	  catch (SQLException ex)
-	  {
-	    System.err.println(ex.getMessage());
-	  }
-	  
-}
 public void doInsertPurchase_order_item(CreateNewPO1 poi)
 {
 	 System.out.print("\n[Performing INSERT] ... ");
