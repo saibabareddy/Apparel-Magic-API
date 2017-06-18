@@ -6,10 +6,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Repository;
 import com.katalyst.model.CreateNewPO;
 import com.katalyst.model.CreateNewPO1;
+import com.katalyst.model.ResponseSKUVault;
+
+import net.sf.json.JSONObject;
 
 @Repository
 @PropertySource("application.properties")
@@ -20,8 +25,8 @@ public void createConnection()
 	   try
 	     {	    	
 	      Class.forName("com.mysql.jdbc.Driver").newInstance();
-	      String url = "jdbc:mysql:/wmsmysql.cun5uvzp5qky.us-east-1.rds.amazonaws.com:3306/POIntegration";
-	      conn = DriverManager.getConnection(url, "wmsmysqladmin", "");	      
+	      String url = "jdbc:mysql://wmsmysql.cun5uvzp5qky.us-east-1.rds.amazonaws.com:3306/POIntegration";
+	      conn = DriverManager.getConnection(url, "wmsmysqladmin", "WMSMySQLPass1");	      
 	      System.out.println("COnnection Successful");	      
 	     }
 	    catch (Exception e)     
@@ -41,13 +46,14 @@ System.out.println("[OUTPUT FROM SELECT]");
 	    ResultSet rs = st.executeQuery("Select * from PO");
 	    while (rs.next())
 	      {
-	       int s = rs.getInt("PO");
+	       int s = rs.getInt("purchase_order_id");
 	       String n = rs.getString("date_due");
-	       String m = rs.getString("Podate");
+	       String m = rs.getString("order_date");
 	       String o = rs.getString("warehouse_id");
+	       String d = rs.getString("ship_via");	
 	       String p = rs.getString("vendor_id");
 	       String q = rs.getString("terms_id");
-	        System.out.println(s + "   " + n + " "+m+" "+o);
+	       System.out.println(s+" "+n+" "+m+" "+o+" "+d+" "+p+" "+q);
 	      }
 	  }
    catch (SQLException ex)
@@ -62,12 +68,12 @@ public String getPO(int poid)
 	    Integer s = null;	  
 	    try
 	    {
-	    	PreparedStatement st = conn.prepareStatement("Select PO from PO where PO = ?");
+	    	PreparedStatement st = conn.prepareStatement("Select id from PO where id = ?");
 	    	st.setInt(1, poid);
 	        ResultSet rs = st.executeQuery();	      
 	      while (rs.next())
 	      {
-	        s = rs.getInt("PO");
+	        s = rs.getInt("id");
 	      }
 	    }
 	    catch (SQLException ex)
@@ -83,7 +89,7 @@ public void doInsertPO(CreateNewPO purchaseorder)
 	System.out.print("\n[Performing INSERT] ... ");
 	  try
 	  {
-	    PreparedStatement st = conn.prepareStatement("INSERT INTO PO (PO, date_due, POdate, warehouse_id, Ship_via, vendor_id, terms_id) VALUES (?,?,?,?,?,?,?)");
+	    PreparedStatement st = conn.prepareStatement("INSERT INTO PO (purchase_order_id, date_due, order_date, warehouse_id, ship_via, vendor_id, terms_id) VALUES (?,?,?,?,?,?,?)");
 	    st.setInt(1, Integer.parseInt(purchaseorder.getPurchase_order_id()));
 		st.setString(2, purchaseorder.getDate_due());
 		st.setString(3, purchaseorder.getDate());
@@ -99,8 +105,25 @@ public void doInsertPO(CreateNewPO purchaseorder)
 	    System.err.println(ex.getMessage());
 	  }
 }
-	
-	
+public void doInsertStatus(ResponseSKUVault res) 
+{
+	System.out.print("Response Inserted Succesfully ");
+	  try
+	  {
+
+	    PreparedStatement st = conn.prepareStatement("INSERT INTO Status (CreatePOStatus, returncode) VALUES (?,?)");
+	    st.setString(1, res.getCreatePOStatus());
+		st.setString(2, res.getReturnCode());
+	    st.executeUpdate();
+	    System.out.println("Response Inserted Succesfully");
+
+	  }
+	  catch (SQLException ex)
+	  {
+	    System.err.println(ex.getMessage());
+	  }
+	  
+}
 public void doInsertPurchase_order_item(CreateNewPO1 poi)
 {
 	 System.out.print("\n[Performing INSERT] ... ");

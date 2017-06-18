@@ -24,10 +24,11 @@ public class ApparelMagicWSService {
 private static final Logger logger = LoggerFactory.getLogger(ApparelMagicWSService.class);
 
 /*@Autowired
-public PoDao padao;
-	*/
+public PoDao padao;*/
+	
 public ArrayList<JSONObject> SyncPOusingDate(String _date)
 	{		
+	
 		JSONObject response = null;
 		JSONObject PO = null;
 		JSONArray responsearray=null;
@@ -46,7 +47,7 @@ public ArrayList<JSONObject> SyncPOusingDate(String _date)
 				PO=(JSONObject) responsearray.get(i);
 				SkuJson post1= mapPost1(PO);
 				ShipVia post3 = getNameForShipvia(PO.getString("ship_via"));
-				//CreateNewPO newpo =mapPO(PO);
+				CreateNewPO newpo =mapPO(PO);
 				purchase_order_items = (JSONArray) PO.get("purchase_order_items");
 				int k = purchase_order_items.size();
 				//String id= padao.getPO(Integer.parseInt(newpo.getPurchase_order_id()));
@@ -56,22 +57,34 @@ public ArrayList<JSONObject> SyncPOusingDate(String _date)
 				logger.debug("date we sent through post" + _date);
 				Date _date1 = (Date) new SimpleDateFormat("MM/dd/yyyy").parse(_date);
 				int result = _date1.compareTo(date1);
-				if( result < 0 || result == 0)
+				SkuLineItemsJson sku = new SkuLineItemsJson();
+				if( result == 0)
 				{
 				int v = 0;
 				for(int m=0; m < k ; m++)
 					{
 						poi =  purchase_order_items.getJSONObject(m);
-						post2.add(mapPost2(poi));
+						sku = mapPost2(poi);
+						post2.add(sku);
 						v++;
-						//CreateNewPO1 poiobj = mapPO1(poi, PO);
+						CreateNewPO1 poiobj = mapPO1(poi, PO);
 						//padao.doInsertPurchase_order_item(poiobj);
 					}
 				JSONObject postdataJson = postJson(post1, post2, post3);
 				logger.debug("The Json to be posted:"+ postdataJson.toString());
 				if(!(postdataJson == null))
 				{
-					responsefromskuvault.add(SkuHttpClient.sendto(postdataJson,"POST","purchaseorders/createPO"));
+					JSONObject addingOutput = SkuHttpClient.sendto(postdataJson,"POST","purchaseorders/createPO");
+					addingOutput.accumulate("PONumber", PO.getString("purchase_order_id"));
+					addingOutput.accumulate("Integration Type", "Purchase");
+					addingOutput.accumulate("Corresponding WarehouseId", ((getNameForWarehouseId(PO.getString("warehouse_id"))==null)? "Empty":getNameForWarehouseId(PO.getString("warehouse_id"))));
+					addingOutput.accumulate("Corresponding TermsId", ((getNameForTermsId(PO.getString("terms_id"))==null)? "Empty":getNameForTermsId(PO.getString("terms_id"))));
+					addingOutput.accumulate("Corresponding VendorId", ((getNameForVendorId(PO.getString("vendor_id"))==null)? "Empty":getNameForVendorId(PO.getString("vendor_id"))));
+					addingOutput.accumulate("Corresponding Carrier details",post3.toString());
+					addingOutput.accumulate("Corresponding SKU", sku.getSKU());
+					responsefromskuvault.add(addingOutput);
+					Thread.sleep(10000);
+					//padao.doInsertStatus(responsefromskuvault);
 				}
 				logger.debug("Response from Sku Vault:"+ responsefromskuvault);
 				//padao.doInsertPO(newpo);
@@ -81,8 +94,8 @@ public ArrayList<JSONObject> SyncPOusingDate(String _date)
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
+		} 
+		 
 	     return responsefromskuvault;
 		
 	}
