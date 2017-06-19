@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"></link>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" ></link>
+    <link rel="stylesheet" type="text/css" href="css/Main.css"></link>
+    <script type="text/javascript" src="js/dash.js"></script>
+</head>
+<body>
+<div class="nav-side-menu">
+    <div class="brand"><i class="fa fa-magic fa-lg" aria-hidden="true"></i> SKU MAGIC</div>
+    <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
+    <div class="menu-list">
+        <div class="user">
+            <ul>
+                <li><i class="fa fa-user-circle-o fa-5x" aria-hidden="true"></i></li>
+                <li>User</li>
+            </ul>
+        </div>
+        <ul id="menu-content" class="menu-content collapse out">
+            <li>
+                <a href="#" onclick="show('section');">
+                    <i class="fa fa-dashboard fa-lg"></i>Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="#active" class="dash">
+                    <i class="fa fa-user fa-lg" aria-hidden="true"></i>My Account
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <i class="fa fa-sign-out" aria-hidden="true"></i>Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="row topbar">
+    <div class="col-lg-12">
+        <a href="Index.html"><i class="fa fa-backward" aria-hidden="true" style="float:right; padding:-5px;"></i></a>
+    </div>
+</div>
+
+<div class="inner-container">
+
+    <div id="section">
+        <div class="row">
+            <div class="col-lg-4 square" onclick="">
+                <h3>Purchase Orders</h3>
+
+            </div>
+            <div class="col-lg-4 square">
+                <h3>Errors</h3>
+            </div>
+            <div class="col-lg-4 square">
+                <h3>Logs</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4 square">
+                <h3> Content</h3>
+            </div>
+            <div class="col-lg-4 square">
+                <h3> Content</h3>
+            </div>
+            <div class="col-lg-4 square">
+                <h3> Content</h3>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="js/bootstrap.min.js"></script>
+</body>
+</html>
