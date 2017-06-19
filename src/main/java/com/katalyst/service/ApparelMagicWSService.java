@@ -74,9 +74,12 @@ public ArrayList<JSONObject> SyncPOusingDate(String _date)
 				logger.debug("The Json to be posted:"+ postdataJson.toString());
 				if(!(postdataJson == null))
 				{
+					Date date = new Date();
 					JSONObject addingOutput = SkuHttpClient.sendto(postdataJson,"POST","purchaseorders/createPO");
-					addingOutput.accumulate("PONumber", PO.getString("purchase_order_id"));
-					addingOutput.accumulate("Integration Type", "Purchase");
+					addingOutput.accumulate("Integration Type", "Purchase Orders");
+					addingOutput.accumulate("Date of Retrieval", date.toString());
+					addingOutput.accumulate("Corresponding PO Number", PO.getString("purchase_order_id"));					
+					addingOutput.accumulate("Corresponding PO Created Date", PO.getString("date"));
 					addingOutput.accumulate("Corresponding WarehouseId", ((getNameForWarehouseId(PO.getString("warehouse_id"))==null)? "Empty":getNameForWarehouseId(PO.getString("warehouse_id"))));
 					addingOutput.accumulate("Corresponding TermsId", ((getNameForTermsId(PO.getString("terms_id"))==null)? "Empty":getNameForTermsId(PO.getString("terms_id"))));
 					addingOutput.accumulate("Corresponding VendorId", ((getNameForVendorId(PO.getString("vendor_id"))==null)? "Empty":getNameForVendorId(PO.getString("vendor_id"))));
