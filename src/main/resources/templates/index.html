@@ -6,39 +6,11 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" ></link>
     <link rel="stylesheet" type="text/css" href="css/Main.css"></link>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-      <script src="js/angular.js"></script>
-    <script type="text/javascript" src="js/dash.js"></script>
-<script>
-    var app = angular.module("SkuManagement", []);
-    app.controller("SkuController", function ($scope, $http) {
-
-        $scope.SendData = function () {
-           // use $.param jQuery function to serialize data from JSON 
-            var data = Date.parse("06/14/2017");
-        
-            var config = {
-                headers : {
-                    'Content-Type': 'application/raw;'
-                }
-            }
-
-            $http.post('http://localhost:8080/Purchase_order', data, config)
-            .success(function (data, status, headers, config) {
-                $scope.PostDataResponse = data;
-            })
-            .error(function (data, status, header, config) {
-                $scope.ResponseDetails = "Data: " + data +
-                    "<hr />status: " + status +
-                    "<hr />headers: " + header +
-                    "<hr />config: " + config;
-            });
-        };
-
-    });
-</script>
+	<script type="text/javascript" src="js/purchseordercontroller.js"></script>
 </head>
-<body ng-app="SkuManagement" ng-controller="SkuController">
+<body ng-app="PurchaseOrderManagement" ng-controller="PurchaseOrderController">
     <div class="nav-side-menu">
         <div class="brand"><i class="fa fa-magic fa-lg" aria-hidden="true"></i> SKU MAGIC</div>
         <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
@@ -78,14 +50,59 @@
 
 <div class="inner-container" >
 
-    <div style ="display:none" id="section">
-        <div class="row">
-            <div class="col-lg-4 square" onclick="">
-            
-                <h3>Purchase Orders</h3>
-                {{ 4+5 }}
-             {{ PostDataResponse}}
+    <div id="section">
+    	<div class="row">
+            <div class="col-lg-4 square">
+            	<h1>Sync Data</h1>
+			  <form ng-submit="submitPurchaseOrder()">
+			    <input type="text"  ng-model="purchaseorderForm.date"/>
+			    <input type="submit" value="Submit"/>		    
+			</form>
             </div>
+        </div>
+    <!-- Table div starts here -->
+        <div>
+            <div>
+            	<div class="tbl-header">
+				    <table cellpadding="2" cellspacing="2" border="0">
+				      <thead>
+				        <tr>
+				          <th>Integration_Type </th>
+				          <th>Date_of_Retrieval </th>
+				          <th>Corresponding_PO_Number </th>
+				          <th>Corresponding_PO_Number  </th>
+				          <th>Corresponding_PO_Created_Date</th>
+				          <th>Corresponding_WarehouseId</th>
+				          <th>Corresponding_TermsId </th>
+				          <th>Corresponding_VendorId </th>
+				          <th>Corresponding_SKU  </th>
+				          <th>CreatePOStatus  </th>
+				        </tr>
+				      </thead>
+				    </table>
+				</div>
+			<div class="tbl-content">
+				<table cellpadding="2" cellspacing="2" border="0">
+				    <tbody>
+				        <tr ng-repeat="purchaseorder in purchaseorders">
+				          <td>{{ purchaseorder.Integration_Type }} </td>
+				          <td>{{ purchaseorder.Date_of_Retrieval }} </td>
+				          <td>{{ purchaseorder.Corresponding_PO_Number }} </td>
+				          <td>{{ purchaseorder.Corresponding_PO_Number }} </td>
+				          <td>{{ purchaseorder.Corresponding_PO_Created_Date }} </td>
+				          <td>{{ purchaseorder.Corresponding_WarehouseId }} </td>
+				          <td>{{ purchaseorder.Corresponding_TermsId }} </td>
+				          <td>{{ purchaseorder.Corresponding_VendorId }} </td>
+				          <td>{{ purchaseorder.Corresponding_SKU }} </td>
+				          <td>{{ purchaseorder.CreatePOStatus }} </td>
+				        </tr>
+				   </tbody>
+				</table>
+			</div>
+            </div>
+          </div>
+          
+          <!-- Table div ends here -->
             <div class="col-lg-4 square">
                 <h3>Errors</h3>
             </div>
@@ -106,8 +123,6 @@
         </div>
     </div>
 
-
-    </div>
 <!--     jQuery (necessary for Bootstrap's JavaScript plugins)
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 Include all compiled plugins (below), or include individual files as needed

@@ -76,15 +76,15 @@ public ArrayList<JSONObject> SyncPOusingDate(String _date)
 				{
 					Date date = new Date();
 					JSONObject addingOutput = SkuHttpClient.sendto(postdataJson,"POST","purchaseorders/createPO");
-					addingOutput.accumulate("Integration Type", "Purchase Orders");
-					addingOutput.accumulate("Date of Retrieval", date.toString());
-					addingOutput.accumulate("Corresponding PO Number", PO.getString("purchase_order_id"));					
-					addingOutput.accumulate("Corresponding PO Created Date", PO.getString("date"));
-					addingOutput.accumulate("Corresponding WarehouseId", ((getNameForWarehouseId(PO.getString("warehouse_id"))==null)? "Empty":getNameForWarehouseId(PO.getString("warehouse_id"))));
-					addingOutput.accumulate("Corresponding TermsId", ((getNameForTermsId(PO.getString("terms_id"))==null)? "Empty":getNameForTermsId(PO.getString("terms_id"))));
-					addingOutput.accumulate("Corresponding VendorId", ((getNameForVendorId(PO.getString("vendor_id"))==null)? "Empty":getNameForVendorId(PO.getString("vendor_id"))));
-					addingOutput.accumulate("Corresponding Carrier details",post3.toString());
-					addingOutput.accumulate("Corresponding SKU", sku.getSKU());
+					addingOutput.accumulate("Integration_Type", "Purchase Orders");
+					addingOutput.accumulate("Date_of_Retrieval", date.toString());
+					addingOutput.accumulate("Corresponding_PO_Number", PO.getString("purchase_order_id"));					
+					addingOutput.accumulate("Corresponding_PO_Created_Date", PO.getString("date"));
+					addingOutput.accumulate("Corresponding_WarehouseId", ((getNameForWarehouseId(PO.getString("warehouse_id"))==null)? "Empty":getNameForWarehouseId(PO.getString("warehouse_id"))));
+					addingOutput.accumulate("Corresponding_TermsId", ((getNameForTermsId(PO.getString("terms_id"))==null)? "Empty":getNameForTermsId(PO.getString("terms_id"))));
+					addingOutput.accumulate("Corresponding_VendorId", ((getNameForVendorId(PO.getString("vendor_id"))==null)? "Empty":getNameForVendorId(PO.getString("vendor_id"))));
+					addingOutput.accumulate("Corresponding_Carrier_details",post3.toString());
+					addingOutput.accumulate("Corresponding_SKU", sku.getSKU());
 					responsefromskuvault.add(addingOutput);
 					Thread.sleep(10000);
 					//padao.doInsertStatus(responsefromskuvault);
