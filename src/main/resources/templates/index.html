@@ -9,6 +9,7 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script type="text/javascript" src="js/purchseordercontroller.js"></script>
+	<script type="text/javascript" src="js/dash.js"></script>
 </head>
 <body ng-app="PurchaseOrderManagement" ng-controller="PurchaseOrderController">
     <div class="nav-side-menu">
@@ -23,7 +24,7 @@
             </div>
             <ul id="menu-content" class="menu-content collapse out">
                 <li>
-                    <a href="#" onclick="show('section');">
+                    <a href="#" onclick="showhide('main-section','sync-data');">
                         <i class="fa fa-dashboard fa-lg"></i>Dashboard
                     </a>
                 </li>
@@ -49,78 +50,74 @@
 
 
 <div class="inner-container" >
-
-    <div id="section">
-    	<div class="row">
-            <div class="col-lg-4 square">
-            	<h1>Sync Data</h1>
-			  <form ng-submit="submitPurchaseOrder()">
+<!-- Sync Data -->
+<div id="sync-data" style="display:none;">
+	<div class="row text-center" style="margin:20px">
+		<div class="col-lg-12">
+        	<h1>Sync Data</h1>
+			<form ng-submit="submitPurchaseOrder()">
 			    <input type="text"  ng-model="purchaseorderForm.date"/>
 			    <input type="submit" value="Submit"/>		    
 			</form>
-            </div>
-        </div>
+		</div>
+	</div>
     <!-- Table div starts here -->
-        <div>
-            <div>
-            	<div class="tbl-header">
-				    <table cellpadding="2" cellspacing="2" border="0">
-				      <thead>
-				        <tr>
-				          <th>Integration_Type </th>
-				          <th>Date_of_Retrieval </th>
-				          <th>Corresponding_PO_Number </th>
-				          <th>Corresponding_PO_Number  </th>
-				          <th>Corresponding_PO_Created_Date</th>
-				          <th>Corresponding_WarehouseId</th>
-				          <th>Corresponding_TermsId </th>
-				          <th>Corresponding_VendorId </th>
-				          <th>Corresponding_SKU  </th>
-				          <th>CreatePOStatus  </th>
-				        </tr>
-				      </thead>
-				    </table>
+            	<div class="row sync-row-head">
+            	<div class="col-lg-1"><h1>PO Status</h1></div>
+            	<div class="col-lg-1"><h1>Return Code</h1></div>
+            	<div class="col-lg-1"><h1>Integration Type</h1></div>
+            	<div class="col-lg-1"><h1>Dt of Retrieval</h1></div>
+            	<div class="col-lg-1"><h1>PO Number</h1></div>
+            	<div class="col-lg-1"><h1>PO Created Dt</h1></div>
+            	<div class="col-lg-1"><h1>Warehouse ID</h1></div>
+            	<div class="col-lg-1"><h1>Terms ID</h1></div>
+            	<div class="col-lg-1"><h1>Vendor ID</h1></div>
+            	<div class="col-lg-2"><h1>Carrier Details</h1></div>
+            	<div class="col-lg-1"><h1>SKU</h1></div>
 				</div>
-			<div class="tbl-content">
-				<table cellpadding="2" cellspacing="2" border="0">
-				    <tbody>
-				        <tr ng-repeat="purchaseorder in purchaseorders">
-				          <td>{{ purchaseorder.Integration_Type }} </td>
-				          <td>{{ purchaseorder.Date_of_Retrieval }} </td>
-				          <td>{{ purchaseorder.Corresponding_PO_Number }} </td>
-				          <td>{{ purchaseorder.Corresponding_PO_Number }} </td>
-				          <td>{{ purchaseorder.Corresponding_PO_Created_Date }} </td>
-				          <td>{{ purchaseorder.Corresponding_WarehouseId }} </td>
-				          <td>{{ purchaseorder.Corresponding_TermsId }} </td>
-				          <td>{{ purchaseorder.Corresponding_VendorId }} </td>
-				          <td>{{ purchaseorder.Corresponding_SKU }} </td>
-				          <td>{{ purchaseorder.CreatePOStatus }} </td>
-				        </tr>
-				   </tbody>
-				</table>
-			</div>
-            </div>
-          </div>
-          
-          <!-- Table div ends here -->
-            <div class="col-lg-4 square">
-                <h3>Errors</h3>
+				<div class="row sync-row-data" ng-repeat="purchaseorder in purchaseorders">
+            	<div class="col-lg-1">{{ purchaseorder.CreatePOStatus }}</div>
+            	<div class="col-lg-1"> {{ purchaseorder.returnCode }}</div>
+            	<div class="col-lg-1">{{ purchaseorder.Integration_Type }}</div>
+            	<div class="col-lg-1">{{ purchaseorder.Date_of_Retrieval }}</div>
+            	<div class="col-lg-1">{{ purchaseorder.Corresponding_PO_Number }}</div>
+            	<div class="col-lg-1">{{ purchaseorder.Corresponding_PO_Created_Date }}</div>
+            	<div class="col-lg-1">{{ purchaseorder.Corresponding_WarehouseId }}</div>
+            	<div class="col-lg-1">{{ purchaseorder.Corresponding_TermsId }}</div>
+            	<div class="col-lg-1">{{ purchaseorder.Corresponding_VendorId }} </div>
+            	<div class="col-lg-2">{{ purchaseorder.Corresponding_Carrier_details }}</div>
+            	<div class="col-lg-1">{{ purchaseorder.Corresponding_SKU }}</div>
+				</div>
+</div>
+<img id="progress-image" src="http://www.downgraf.com/wp-content/uploads/2014/09/01-progress.gif" style="height:60px;display:none"/>
+<!-- End Sync Data -->
+          <!-- Main Section -->
+          <div id="main-section">
+                    <div class="row">
+          <div class="col-lg-4 square">
+                <a href="#" onclick="showhide('sync-data','main-section');"><h3>Purchase Order</h3></a>
             </div>
             <div class="col-lg-4 square">
-                <h3>Logs</h3>
+                <h3>Products</h3>
             </div>
-        </div>
+            <div class="col-lg-4 square">
+                <h3>Vendors</h3>
+            </div>
+            </div>
+
         <div class="row">
             <div class="col-lg-4 square">
-                <h3> Content</h3>
+                <h3> Warehouses</h3>
             </div>
             <div class="col-lg-4 square">
-                <h3> Content</h3>
+                <h3> Shipments</h3>
             </div>
             <div class="col-lg-4 square">
-                <h3> Content</h3>
+                <h3> Inventory</h3>
             </div>
         </div>
+          </div>
+<!-- End Main section -->
     </div>
 
 <!--     jQuery (necessary for Bootstrap's JavaScript plugins)

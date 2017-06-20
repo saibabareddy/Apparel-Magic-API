@@ -13,7 +13,7 @@ var app = angular.module("PurchaseOrderManagement", []);
                 // with the help of id, we are going to find out whether it is put or post operation
                 
                 $scope.submitPurchaseOrder = function() {
-         
+         $('#progress-image').show();
                     var method = "";
                     var url = "";
                     
@@ -31,9 +31,11 @@ var app = angular.module("PurchaseOrderManagement", []);
                         }
                     }).then(function successCallback(response) {
                         $scope.purchaseorders = response.data;
-                        console.log($scope.purchaseorders)
+                        console.log($scope.purchaseorders);
+                        $('#progress-image').hide();
                     }, function errorCallback(response) {
                         console.log(response.statusText);
+                        $('#progress-image').hide();
                     });
                 };
          

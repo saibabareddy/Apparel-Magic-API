@@ -1,6 +1,4 @@
-function hide(target){
-    document.getElementById(target).style.display = "none";
-}
-function show(target){
-    document.getElementById(target).style.display = "block";
+function showhide(show,hide){
+    document.getElementById(hide).style.display = "none";
+    document.getElementById(show).style.display = "block";
 }
