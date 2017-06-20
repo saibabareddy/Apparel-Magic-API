@@ -9,7 +9,12 @@ public class ApparelMagicController {
 	
 @RequestMapping("/")
 public String angular(Model model){
-	return "index";
+	return "login";
+	
 }
-
+@RequestMapping("/Skumagic")
+public String skumagic(Model model){
+	return "index";
+	
+}
 }

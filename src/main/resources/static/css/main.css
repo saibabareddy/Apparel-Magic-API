@@ -135,47 +135,12 @@ body {
     background-color: white;
 
 }
-/* h1{
-  font-size: 100px;
-  color: #cf9825;
-  text-transform: uppercase;
-  font-weight: 1000;
-  text-align: center;
-  margin-bottom: 15px;
+
+.header-text{
+	text-align: right;
+	margin:10px;
+	padding-right:40px;
 }
-table{
-  width:100%;
-  table-layout: fixed;
-  border: 5px solid black;
-}
-.tbl-header{
-  background-color: rgba(255,255,255,0.5);
- }
-.tbl-content{
-  height:500px;
-  overflow-x:auto;
-  margin-top: 0px;
-  border: 1px solid rgba(255,255,255,0.3);
-}
-th{
-  padding: 100px 100px;
-  text-align: center;
-  font-weight: 500;
-  font-size: 25px;
-  color: #800040;
-  height:60px;
-  border: 50px solid black;
-  text-transform: uppercase;
-}
-td{
-  padding: 100px;
-  text-align: center;
-  height:60px;
-  font-weight: 300;
-  font-size: 24px;
-  color: #956c31;
-  border-bottom: 5px solid black;
-} */
 @media only screen and (max-width:414px) {
     .square{
         border-radius: 15px;
@@ -187,3 +152,4 @@ td{
         background-color: white;
     }
 }
+
