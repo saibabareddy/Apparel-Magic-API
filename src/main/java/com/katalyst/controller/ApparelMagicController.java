@@ -9,7 +9,7 @@ public class ApparelMagicController {
 	
 @RequestMapping("/")
 public String angular(Model model){
-	return "login";
+	return "newlog";
 	
 }
 @RequestMapping("/Skumagic")
