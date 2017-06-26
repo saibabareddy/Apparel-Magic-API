@@ -1,0 +1,18 @@
+git init
+git remote add origin https://github.com/[username]/[reponame].git
+git add .
+git config core.autocrlf true
+git commit -a -m "Initial commit" 
+git push -u origin --all
+================================
+create a new repository on the command line
+echo "# CSR-Celero" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin https://github.com/saibabareddy/CSR-Celero.git
+git push -u origin master
+
+push an existing repository from the command line
+git remote add origin https://github.com/saibabareddy/CSR-Celero.git
+git push -u origin master

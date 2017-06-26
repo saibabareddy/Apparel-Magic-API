@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Implementation-Title: ApparelMagicClient
 Implementation-Version: 0.0.1-SNAPSHOT
-Built-By: sreddy
+Built-By: svadagam
 Implementation-Vendor-Id: com.katlayst
-Build-Jdk: 1.8.0_131
+Build-Jdk: 1.8.0_121
 Implementation-URL: http://projects.spring.io/spring-boot/ApparelMagic
  Client/
 Created-By: Maven Integration for Eclipse

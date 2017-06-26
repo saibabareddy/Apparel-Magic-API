@@ -12,7 +12,7 @@ var app = angular.module("OrderManagement", []);
                         sku_id : "",
                         qty : ""
                     };
-                _refreshshipmentData();
+                _refreshorderData();
                 
 
                 //HTTP POST/PUT methods for add/edit country 
@@ -37,21 +37,19 @@ var app = angular.module("OrderManagement", []);
                         }
                     }).then( _success, _error );
                 };
-                      
-                /* Private Methods */
-                //HTTP GET- get all shipments collection
-                function _refreshshipmentData() {
+
+                function _refreshorderData() {
                     $http({
                         method : 'GET',
-                        url : 'http://localhost:8080/Shipments'
+                        url : 'https://sandbox2.app.apparelmagic.com/api/json/orders/?time=171114279788&token=64ebd05e550b23a15be09ccef57b27c6'
                     }).then(function successCallback(response) {
-                        $scope.shipments = response.data;
+                        $scope.orders = response.data;
                     }, function errorCallback(response) {
                         console.log(response.statusText);
                     });
                 }
                 function _success(response) {
-                    _refreshshipmentData();
+                    _refreshorderData();
                     _clearFormData()
                 }
          

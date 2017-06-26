@@ -1,38 +1,128 @@
-<html>
-  <head>  
-  <title>Apparel Magic API JSON</title>
-	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-	  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.js"></script>
-	  <script src="js/createneworder.js"></script>
-	  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css" />
-      <link rel="stylesheet" href="css/form.css"/>
-    </head>
-    <body ng-app="OrderManagement" ng-controller="OrderController">
-   <Center> <div><h1>For Adding New Order Click below</h1></div>
-    <br/>
-		<div class="form">
-			  
-			  <h1>Add New Order</h1>
-			  <form ng-submit="submitOrder()">
-			    <input type="text" placeholder="customer_id" ng-model="orderForm.customer_id"/>
-			     <input type="text" placeholder="division_id" ng-model="orderForm.division_id"/>
-			      <input type="text" placeholder="ar_acct" ng-model="orderForm.ar_acct"/>
-			       <input type="text" placeholder="warehouse_id" ng-model="orderForm.warehouse_id"/>
-			        <input type="text" placeholder="currency_id" ng-model="orderForm.currency_id"/>
-			         <input type="text" placeholder="sku_id" ng-model="orderForm.sku_id"/>
-			   		  <input type="text" placeholder="qty" ng-model="orderForm.qty"/>
-			    
-			    <input type="submit" value="Submit" class="submit"/>
-			    
-			  </form>
-		</div><div class="boxclose" style="display: inline;">X</div></Center>
-		
-			<div class="ok_message">
-			<span>Order Created</span></div>
-			    <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
-			    <script src='http://cdnjs.cloudflare.com/ajax/libs/gsap/1.16.1/TweenMax.min.js'></script>
-			    <script src="js/form.js"></script>
-			    <br/>  
-  </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>SkuMagic</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"></link>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" ></link>
+    <link rel="stylesheet" type="text/css" href="css/main.css"></link>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script type="text/javascript" src="js/purchseordercontroller.js"></script>
+	<script type="text/javascript" src="js/dash.js"></script>
+</head>
+<body ng-app="PurchaseOrderManagement" ng-controller="PurchaseOrderController">
+    <div class="nav-side-menu">
+        <div class="brand"><i class="fa fa-magic fa-lg" aria-hidden="true"></i> SKU MAGIC</div>
+        <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
+        <div class="menu-list">
+            <div class="user">
+                <ul>
+                <li><i class="fa fa-user-circle-o fa-5x" aria-hidden="true"></i></li>
+                <li>User</li>
+                </ul>
+            </div>
+            <ul id="menu-content" class="menu-content collapse out">
+                <li>
+                    <a href="#" onclick="showhide('main-section','sync-data');">
+                        <i class="fa fa-dashboard fa-lg"></i>Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="dash">
+                        <i class="fa fa-user fa-lg" aria-hidden="true"></i>My Account
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <i class="fa fa-sign-out" aria-hidden="true"></i>Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="row topbar">
+        <div class="col-lg-12">
+
+        </div>
+    </div>
+
+
+<div class="inner-container" >
+<!-- Sync Data -->
+<div id="sync-data" style="display:none;">
+	<div class="row text-center" style="margin:20px">
+		<div class="col-lg-12">
+        	<h1>Sync Data</h1>
+			<form ng-submit="submitPurchaseOrder()">
+			    <input type="text"  ng-model="purchaseorderForm.date"/>
+			    <input type="submit" value="Submit"/>		    
+			</form>
+		</div>
+	</div>
+    <!-- Table div starts here -->
+            	<div class="row sync-row-head">
+            	<div class="col-lg-1"><h1>PO Status</h1></div>
+            	<div class="col-lg-1"><h1>Return Code</h1></div>
+            	<div class="col-lg-1"><h1>Integration Type</h1></div>
+            	<div class="col-lg-1"><h1>Dt of Retrieval</h1></div>
+            	<div class="col-lg-1"><h1>PO Number</h1></div>
+            	<div class="col-lg-1"><h1>PO Created Dt</h1></div>
+            	<div class="col-lg-1"><h1>Warehouse ID</h1></div>
+            	<div class="col-lg-1"><h1>Terms ID</h1></div>
+            	<div class="col-lg-1"><h1>Vendor ID</h1></div>
+            	<div class="col-lg-2"><h1>Carrier Details</h1></div>
+            	<div class="col-lg-1"><h1>SKU</h1></div>
+				</div>
+				<div class="row sync-row-data" ng-repeat="purchaseorder in purchaseorders">
+            	<div class="col-lg-1">{{ purchaseorder.CreatePOStatus }}</div>
+            	<div class="col-lg-1"> {{ purchaseorder.returnCode }}</div>
+            	<div class="col-lg-1">{{ purchaseorder.Integration_Type }}</div>
+            	<div class="col-lg-1">{{ purchaseorder.Date_of_Retrieval }}</div>
+            	<div class="col-lg-1">{{ purchaseorder.Corresponding_PO_Number }}</div>
+            	<div class="col-lg-1">{{ purchaseorder.Corresponding_PO_Created_Date }}</div>
+            	<div class="col-lg-1">{{ purchaseorder.Corresponding_WarehouseId }}</div>
+            	<div class="col-lg-1">{{ purchaseorder.Corresponding_TermsId }}</div>
+            	<div class="col-lg-1">{{ purchaseorder.Corresponding_VendorId }} </div>
+            	<div class="col-lg-2">{{ purchaseorder.Corresponding_Carrier_details }}</div>
+            	<div class="col-lg-1">{{ purchaseorder.Corresponding_SKU }}</div>
+				</div>
+</div>
+<img id="progress-image" src="http://www.downgraf.com/wp-content/uploads/2014/09/01-progress.gif" style="height:60px;display:none"/>
+<!-- End Sync Data -->
+          <!-- Main Section -->
+          <div id="main-section">
+                    <div class="row">
+          <div class="col-lg-4 square">
+                <a href="#" style="color:inherit;" onclick="showhide('sync-data','main-section');"><h3>Purchase Order <i class="fa fa-shopping-cart" aria-hidden="true" style="padding-left:5px;"></i></h3></a>
+            </div>
+            <div class="col-lg-4 square">
+                <h3>Products</h3>
+            </div>
+            <div class="col-lg-4 square">
+                <h3>Vendors</h3>
+            </div>
+            </div>
+
+        <div class="row">
+            <div class="col-lg-4 square">
+                <h3> Warehouses</h3>
+            </div>
+            <div class="col-lg-4 square">
+                <h3> Shipments</h3>
+            </div>
+            <div class="col-lg-4 square">
+                <h3> Inventory</h3>
+            </div>
+        </div>
+          </div>
+<!-- End Main section -->
+    </div>
+
+<!--     jQuery (necessary for Bootstrap's JavaScript plugins)
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+Include all compiled plugins (below), or include individual files as needed
+<script src="js/bootstrap.min.js"></script> -->
+</body>
 </html>

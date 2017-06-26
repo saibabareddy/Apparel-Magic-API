@@ -1,3 +1,16 @@
+.sync-row-head h1{
+	font-size:12px;
+	font-weight: bold;
+}
+.sync-row-head{
+	border-style: solid;
+}
+.sync-row-data{
+	border-style: solid;
+}
+#main-section{
+	display:block;
+}
 .nav-side-menu {
     overflow: auto;
     font-family: verdana;
@@ -123,6 +136,11 @@ body {
 
 }
 
+.header-text{
+	text-align: right;
+	margin:10px;
+	padding-right:40px;
+}
 @media only screen and (max-width:414px) {
     .square{
         border-radius: 15px;
@@ -134,3 +152,4 @@ body {
         background-color: white;
     }
 }
+
